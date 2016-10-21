@@ -9,6 +9,21 @@ var sass = require('gulp-sass');
 var less = require('gulp-less');
 var minifycss = require('gulp-minify-css');
 var rename = require('gulp-rename');
+var fileinclude  =require('gulp-file-include');//引入gulp-file-include
+
+gulp.task('fileinclude', function() {
+
+    gulp.src('src/Views/**.html') .pipe(fileinclude({//gulp.src中存放要编译的文件
+
+        prefix:'@@',
+
+        basepath:'@file'
+
+    })).pipe(gulp.dest('dist'));//gulp.dest中存放编译后的文件的存放地址
+
+});
+
+
 
 // 检查js脚本
 gulp.task('lint', function() {
@@ -37,7 +52,7 @@ gulp.task('sass', function() {
 });
 
 // 编译less
-gulp.task('sass', function() {
+gulp.task('less', function() {
     gulp.src('./less/*.less')
         .pipe(less())
         .pipe(gulp.dest('./css'));
@@ -53,13 +68,13 @@ gulp.task('style', function() {
 
 // 默认任务
 gulp.task('default', function(){
-    gulp.run('lint', 'sass', 'scripts','style');
+    gulp.run('lint', 'sass', 'scripts','style','fileinclude');
 
     // 监听文件变化
     gulp.watch('./js/*.js', function(){
         gulp.run('lint', 'scripts');
     });
-    gulp.watch('./sass/*.scss', function(){
+    gulp.watch('./scss/*.scss', function(){
         gulp.run('sass');
     });
     gulp.watch('./less/*.less', function(){
